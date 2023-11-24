@@ -17,31 +17,32 @@ struct Question : Identifiable{
 }
 
 struct QuestionView : View{
-    @State var question: Question
+    @Binding var question: Question
     
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             Text(question.title)
             
-            ForEach(question.options, id:\.self ) {option in
+            ForEach(question.options, id: \.self ) {option in
                 HStack {
                     Button {
                         question.selection = option
                         print(option)
+                        print("Current selection: \(question.selection ?? "nil")")
                     } label: {
                         if question.selection == option {
                             Circle()
                                 .shadow(radius: 3)
                                 .frame(width: 24, height: 24)
-                                .foregroundColor(Color("AppColor"))
-                        }
-                        else {
+                                .foregroundColor(.blue) // Oder eine andere Standardfarbe
+                        } else {
                             Circle()
                                 .stroke()
                                 .shadow(radius: 3)
                                 .frame(width: 24, height: 24)
                         }
                     }
+
                     
                     Text(option)
                 }
@@ -60,8 +61,8 @@ struct QuestionView : View{
         
 }
 
-struct QuestionView_Previews: PreviewProvider{
-    static var previews: some View{
-        QuestionView(question: Question(title: "Frage zu einem Thema: ", answer: "A", options: ["A","B"]))
+struct QuestionView_Previews: PreviewProvider {
+    static var previews: some View {
+        QuestionView(question: .constant(Question(title: "Sample Question", answer: "A", options: ["A", "B", "C", "D"], selection: nil)))
     }
 }
