@@ -1,6 +1,7 @@
 import SwiftUI
 
 class QuizManager: ObservableObject {
+    
     @Published var mockQuestions = [
         Question(title: "Was ist eine ADSR Hüllkurve?", answer: "A", options: ["A","B","C","D"]),
         Question(title: "Was ist eine 2?", answer: "A", options: ["A","B","C","D"]),
@@ -16,34 +17,31 @@ class QuizManager: ObservableObject {
         var correct: CGFloat = 0
 
         for question in mockQuestions {
-            if let selection = question.selection, selection == question.answer {
+            if question.answer == question.selection {
                 correct += 1
             }
         }
 
-        let percentage = (correct / CGFloat(mockQuestions.count)) * 100
-        return String(format: "%.2f%%", percentage)
+        return "\((correct / CGFloat(mockQuestions.count)) * 100)%"
     }
     
 }
 
 struct ContentView: View {
-    @State var manager =  QuizManager()
+    @StateObject var manager =  QuizManager()
 
     var body: some View {
         TabView {
             ForEach(manager.mockQuestions.indices, id: \.self) { index in
                 VStack {
                     Spacer()
-                    // Assuming QuestionView is implemented correctly
                     QuestionView(question: $manager.mockQuestions[index])
                     Spacer()
 
                     if let lastQuestion = manager.mockQuestions.last,
                        lastQuestion.id == manager.mockQuestions[index].id {
                         Button {
-                            // Implement logic for handling the submit action
-                            print(manager.canSubmitQuiz())
+                            print(manager.gradeQuiz())
                         } label: {
                             Text("Submit")
                                 .padding()
